@@ -7,7 +7,7 @@
 				"language": "sql"
 			},
 			"currentConnection": {
-				"databaseName": "Market-insight-analytics",
+				"databaseName": "market-insight-analytics",
 				"poolName": "Built-in"
 			},
 			"resultLimit": 5000

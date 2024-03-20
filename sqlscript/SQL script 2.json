@@ -1,0 +1,17 @@
+{
+	"name": "SQL script 2",
+	"properties": {
+		"content": {
+			"query": "select comp.name, experience_level,count(job_id) number_of_jobs from jpmia.DimCompanies comp \njoin jpmia.FactJobPostings jobs\n    on comp.company_id = jobs.company_id\ngroup by comp.name, experience_level\n;",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "market-insight-analytics",
+				"poolName": "Built-in"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}
