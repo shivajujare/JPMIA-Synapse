@@ -2,7 +2,7 @@
 	"name": "schema",
 	"properties": {
 		"content": {
-			"query": "CREATE SCHEMA jpmia;",
+			"query": "CREATE SCHEMA jpmia;\n\nselect top 100 * from jpmia.vw_job_detail;",
 			"metadata": {
 				"language": "sql"
 			},
