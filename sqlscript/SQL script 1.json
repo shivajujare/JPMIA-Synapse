@@ -1,0 +1,17 @@
+{
+	"name": "SQL script 1",
+	"properties": {
+		"content": {
+			"query": "SELECT TOP (100) [company_id]\n,[name]\n,[description]\n,[company_size]\n,[formatted_company_size]\n,[state]\n,[country]\n,[city]\n,[zip_code]\n,[address]\n,[url]\n,[ingest_date]\n FROM [jpmia].[DimCompanies]",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "Market-insight-analytics",
+				"poolName": "Built-in"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}
