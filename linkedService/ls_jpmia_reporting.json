@@ -1,0 +1,14 @@
+{
+	"name": "ls_jpmia_reporting",
+	"properties": {
+		"annotations": [],
+		"type": "AzureSqlDW",
+		"typeProperties": {
+			"connectionString": "Integrated Security=False;Encrypt=True;Connection Timeout=30;Data Source=jpmia-synapse-analytics.sql.azuresynapse.net;Initial Catalog=jpmia_reporting"
+		},
+		"connectVia": {
+			"referenceName": "AutoResolveIntegrationRuntime",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}
