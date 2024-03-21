@@ -67,13 +67,10 @@
 								"parameters": {},
 								"datasetParameters": {
 									"companyDetail": {},
-									"companyReport": {}
-								},
-								"linkedServiceParameters": {}
+									"sink1": {}
+								}
 							},
-							"staging": {
-								"folderPath": ""
-							},
+							"staging": {},
 							"compute": {
 								"coreCount": 8,
 								"computeType": "General"
@@ -88,8 +85,7 @@
 				"annotations": []
 			},
 			"dependsOn": [
-				"[concat(variables('workspaceId'), '/dataflows/ingest company detail')]",
-				"[concat(variables('workspaceId'), '/integrationRuntimes/AutoResolveIntegrationRuntime')]"
+				"[concat(variables('workspaceId'), '/dataflows/ingest company detail')]"
 			]
 		},
 		{
@@ -479,7 +475,7 @@
 								"referenceName": "ds_jpmia_reporting_comp_det",
 								"type": "DatasetReference"
 							},
-							"name": "companyReport"
+							"name": "sink1"
 						}
 					],
 					"transformations": [],
@@ -514,7 +510,7 @@
 						"     format: 'table',",
 						"     skipDuplicateMapInputs: true,",
 						"     skipDuplicateMapOutputs: true,",
-						"     errorHandlingOption: 'stopOnFirstError') ~> companyReport"
+						"     errorHandlingOption: 'stopOnFirstError') ~> sink1"
 					]
 				}
 			},
