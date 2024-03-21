@@ -1,8 +1,8 @@
 {
-	"name": "SQL script 1",
+	"name": "vw_job_application_rate",
 	"properties": {
 		"content": {
-			"query": "select top 10 * from jpmia.vw_job_detail;",
+			"query": "create view jpmia.vw_job_application_rate as\nwith cte as (\nselect  work_type,\n        application_type,\n        ISNULL(posting_domain,'N/A') posting_domain,\n        sum(applies) no_of_applications,\n        sum(views) no_of_views\nfrom jpmia.FactJobPostings\ngroup by work_type,\n       application_type,\n       posting_domain\n)\n\nSELECT work_type,\n       application_type,\n       posting_domain,\n       no_of_applications,\n       no_of_views,\n       case when no_of_views>0 and no_of_applications > 0 then CAST((no_of_applications * 100.0 / no_of_views) as DECIMAL(18,2))\n            else 0.00\n        end AS application_percentage\nFROM cte\n--group by work_type,application_type,posting_domain\n",
 			"metadata": {
 				"language": "sql"
 			},
