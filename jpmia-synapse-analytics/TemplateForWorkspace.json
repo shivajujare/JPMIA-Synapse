@@ -503,6 +503,7 @@
 						"     format: 'table') ~> companyDetail",
 						"companyDetail sink(allowSchemaDrift: true,",
 						"     validateSchema: false,",
+						"     stagingSchemaName: 'jpmia_tmp',",
 						"     deletable:false,",
 						"     insertable:true,",
 						"     updateable:false,",
