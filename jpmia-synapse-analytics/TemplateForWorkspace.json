@@ -21,6 +21,14 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'ls_market_insight_analytics'"
 		},
+		"ls_sql_jpmia_reporting_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'ls_sql_jpmia_reporting'"
+		},
+		"ls_sql_mia_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'ls_sql_mia'"
+		},
 		"jpmia-synapse-analytics-WorkspaceDefaultStorage_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://adlsjpmia.dfs.core.windows.net"
@@ -34,15 +42,6 @@
 		"workspaceId": "[concat('Microsoft.Synapse/workspaces/', parameters('workspaceName'))]"
 	},
 	"resources": [
-		{
-			"name": "[concat(parameters('workspaceName'), '/jpmia_reporting')]",
-			"type": "Microsoft.Synapse/workspaces/sqlPools",
-			"apiVersion": "2019-06-01-preview",
-			"properties": {
-				"annotations": []
-			},
-			"dependsOn": []
-		},
 		{
 			"name": "[concat(parameters('workspaceName'), '/Pipeline 1')]",
 			"type": "Microsoft.Synapse/workspaces/pipelines",
@@ -67,17 +66,11 @@
 								"type": "DataFlowReference",
 								"parameters": {},
 								"datasetParameters": {
-									"companyDetail": {},
-									"companyReport": {}
+									"source1": {},
+									"sink1": {}
 								}
 							},
-							"staging": {
-								"linkedService": {
-									"referenceName": "jpmia-synapse-analytics-WorkspaceDefaultStorage",
-									"type": "LinkedServiceReference"
-								},
-								"folderPath": "jpmia-synapse"
-							},
+							"staging": {},
 							"compute": {
 								"coreCount": 8,
 								"computeType": "General"
@@ -92,8 +85,7 @@
 				"annotations": []
 			},
 			"dependsOn": [
-				"[concat(variables('workspaceId'), '/dataflows/ingest company detail')]",
-				"[concat(variables('workspaceId'), '/linkedServices/jpmia-synapse-analytics-WorkspaceDefaultStorage')]"
+				"[concat(variables('workspaceId'), '/dataflows/ingest company detail')]"
 			]
 		},
 		{
@@ -204,6 +196,113 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('workspaceName'), '/ds_jpmia_reporting_comp_det')]",
+			"type": "Microsoft.Synapse/workspaces/datasets",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ls_sql_jpmia_reporting",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": "jpmia",
+					"table": "CompanyDetailReport"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/ls_sql_jpmia_reporting')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/ds_mia_company_detail')]",
+			"type": "Microsoft.Synapse/workspaces/datasets",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ls_sql_mia",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "company_id",
+						"type": "bigint",
+						"precision": 19
+					},
+					{
+						"name": "name",
+						"type": "nvarchar"
+					},
+					{
+						"name": "description",
+						"type": "nvarchar"
+					},
+					{
+						"name": "company_size",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "formatted_company_size",
+						"type": "nvarchar"
+					},
+					{
+						"name": "state",
+						"type": "nvarchar"
+					},
+					{
+						"name": "country",
+						"type": "nvarchar"
+					},
+					{
+						"name": "city",
+						"type": "nvarchar"
+					},
+					{
+						"name": "zip_code",
+						"type": "nvarchar"
+					},
+					{
+						"name": "address",
+						"type": "nvarchar"
+					},
+					{
+						"name": "url",
+						"type": "nvarchar"
+					},
+					{
+						"name": "industries",
+						"type": "nvarchar"
+					},
+					{
+						"name": "specialities",
+						"type": "nvarchar"
+					},
+					{
+						"name": "number_of_employees",
+						"type": "bigint",
+						"precision": 19
+					},
+					{
+						"name": "number_of_followers",
+						"type": "bigint",
+						"precision": 19
+					}
+				],
+				"typeProperties": {
+					"schema": "jpmia",
+					"table": "vw_Company_details"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/ls_sql_mia')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('workspaceName'), '/jpmia-synapse-analytics-WorkspaceDefaultSqlServer')]",
 			"type": "Microsoft.Synapse/workspaces/linkedServices",
 			"apiVersion": "2019-06-01-preview",
@@ -298,6 +397,44 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('workspaceName'), '/ls_sql_jpmia_reporting')]",
+			"type": "Microsoft.Synapse/workspaces/linkedServices",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"annotations": [],
+				"type": "AzureSqlDatabase",
+				"typeProperties": {
+					"connectionString": "[parameters('ls_sql_jpmia_reporting_connectionString')]"
+				},
+				"connectVia": {
+					"referenceName": "AutoResolveIntegrationRuntime",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/integrationRuntimes/AutoResolveIntegrationRuntime')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/ls_sql_mia')]",
+			"type": "Microsoft.Synapse/workspaces/linkedServices",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"annotations": [],
+				"type": "AzureSqlDatabase",
+				"typeProperties": {
+					"connectionString": "[parameters('ls_sql_mia_connectionString')]"
+				},
+				"connectVia": {
+					"referenceName": "AutoResolveIntegrationRuntime",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/integrationRuntimes/AutoResolveIntegrationRuntime')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('workspaceName'), '/AutoResolveIntegrationRuntime')]",
 			"type": "Microsoft.Synapse/workspaces/integrationRuntimes",
 			"apiVersion": "2019-06-01-preview",
@@ -326,19 +463,19 @@
 					"sources": [
 						{
 							"dataset": {
-								"referenceName": "ds_company_detaiil",
+								"referenceName": "ds_mia_company_detail",
 								"type": "DatasetReference"
 							},
-							"name": "companyDetail"
+							"name": "source1"
 						}
 					],
 					"sinks": [
 						{
 							"dataset": {
-								"referenceName": "ds_d_company_report",
+								"referenceName": "ds_jpmia_reporting_comp_det",
 								"type": "DatasetReference"
 							},
-							"name": "companyReport"
+							"name": "sink1"
 						}
 					],
 					"transformations": [],
@@ -363,26 +500,23 @@
 						"     allowSchemaDrift: true,",
 						"     validateSchema: false,",
 						"     isolationLevel: 'READ_UNCOMMITTED',",
-						"     format: 'table',",
-						"     staged: true) ~> companyDetail",
-						"companyDetail sink(allowSchemaDrift: true,",
+						"     format: 'table') ~> source1",
+						"source1 sink(allowSchemaDrift: true,",
 						"     validateSchema: false,",
 						"     deletable:false,",
 						"     insertable:true,",
 						"     updateable:false,",
 						"     upsertable:false,",
 						"     format: 'table',",
-						"     staged: true,",
-						"     allowCopyCommand: true,",
 						"     skipDuplicateMapInputs: true,",
 						"     skipDuplicateMapOutputs: true,",
-						"     errorHandlingOption: 'stopOnFirstError') ~> companyReport"
+						"     errorHandlingOption: 'stopOnFirstError') ~> sink1"
 					]
 				}
 			},
 			"dependsOn": [
-				"[concat(variables('workspaceId'), '/datasets/ds_company_detaiil')]",
-				"[concat(variables('workspaceId'), '/datasets/ds_d_company_report')]"
+				"[concat(variables('workspaceId'), '/datasets/ds_mia_company_detail')]",
+				"[concat(variables('workspaceId'), '/datasets/ds_jpmia_reporting_comp_det')]"
 			]
 		},
 		{

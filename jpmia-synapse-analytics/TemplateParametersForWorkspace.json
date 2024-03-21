@@ -14,6 +14,12 @@
 		"ls_market_insight_analytics_connectionString": {
 			"value": ""
 		},
+		"ls_sql_jpmia_reporting_connectionString": {
+			"value": ""
+		},
+		"ls_sql_mia_connectionString": {
+			"value": ""
+		},
 		"jpmia-synapse-analytics-WorkspaceDefaultStorage_properties_typeProperties_url": {
 			"value": "https://adlsjpmia.dfs.core.windows.net"
 		},
