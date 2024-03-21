@@ -8,6 +8,12 @@
 		"jpmia-synapse-analytics-WorkspaceDefaultSqlServer_connectionString": {
 			"value": "Integrated Security=False;Encrypt=True;Connection Timeout=30;Data Source=tcp:jpmia-synapse-analytics.sql.azuresynapse.net,1433;Initial Catalog=@{linkedService().DBName}"
 		},
+		"ls_jpmia_reporting_connectionString": {
+			"value": "Integrated Security=False;Encrypt=True;Connection Timeout=30;Data Source=jpmia-synapse-analytics.sql.azuresynapse.net;Initial Catalog=jpmia_reporting"
+		},
+		"ls_market_insight_analytics_connectionString": {
+			"value": ""
+		},
 		"jpmia-synapse-analytics-WorkspaceDefaultStorage_properties_typeProperties_url": {
 			"value": "https://adlsjpmia.dfs.core.windows.net"
 		},
