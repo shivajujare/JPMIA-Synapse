@@ -18,7 +18,7 @@
 						"referenceName": "ds_jpmia_reporting_comp_det",
 						"type": "DatasetReference"
 					},
-					"name": "companyReport"
+					"name": "sink1"
 				}
 			],
 			"transformations": [],
@@ -53,7 +53,7 @@
 				"     format: 'table',",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
-				"     errorHandlingOption: 'stopOnFirstError') ~> companyReport"
+				"     errorHandlingOption: 'stopOnFirstError') ~> sink1"
 			]
 		}
 	}
