@@ -20,11 +20,7 @@
 						"type": "DataFlowReference"
 					},
 					"staging": {
-						"linkedService": {
-							"referenceName": "jpmia-synapse-analytics-WorkspaceDefaultStorage",
-							"type": "LinkedServiceReference"
-						},
-						"folderPath": "jpmia-synapse"
+						"folderPath": ""
 					},
 					"compute": {
 						"coreCount": 8,
