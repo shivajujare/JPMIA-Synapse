@@ -1,0 +1,63 @@
+{
+	"name": "ingest company detail",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "ds_company_detaiil",
+						"type": "DatasetReference"
+					},
+					"name": "companyDetail"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "ds_d_company_report",
+						"type": "DatasetReference"
+					},
+					"name": "companyReport"
+				}
+			],
+			"transformations": [],
+			"scriptLines": [
+				"source(output(",
+				"          company_id as long,",
+				"          name as string,",
+				"          description as string,",
+				"          company_size as integer,",
+				"          formatted_company_size as string,",
+				"          state as string,",
+				"          country as string,",
+				"          city as string,",
+				"          zip_code as string,",
+				"          address as string,",
+				"          url as string,",
+				"          industries as string,",
+				"          specialities as string,",
+				"          number_of_employees as long,",
+				"          number_of_followers as long",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table',",
+				"     staged: true) ~> companyDetail",
+				"companyDetail sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     staged: true,",
+				"     allowCopyCommand: true,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> companyReport"
+			]
+		}
+	}
+}

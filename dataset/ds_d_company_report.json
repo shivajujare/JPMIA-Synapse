@@ -1,0 +1,16 @@
+{
+	"name": "ds_d_company_report",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_jpmia_reporting",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlDWTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "jpmia",
+			"table": "CompanyDetailReport"
+		}
+	}
+}

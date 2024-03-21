@@ -1,0 +1,81 @@
+{
+	"name": "ds_company_detaiil",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_market_insight_analytics",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlDWTable",
+		"schema": [
+			{
+				"name": "company_id",
+				"type": "bigint",
+				"precision": 19
+			},
+			{
+				"name": "name",
+				"type": "nvarchar"
+			},
+			{
+				"name": "description",
+				"type": "nvarchar"
+			},
+			{
+				"name": "company_size",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "formatted_company_size",
+				"type": "nvarchar"
+			},
+			{
+				"name": "state",
+				"type": "nvarchar"
+			},
+			{
+				"name": "country",
+				"type": "nvarchar"
+			},
+			{
+				"name": "city",
+				"type": "nvarchar"
+			},
+			{
+				"name": "zip_code",
+				"type": "nvarchar"
+			},
+			{
+				"name": "address",
+				"type": "nvarchar"
+			},
+			{
+				"name": "url",
+				"type": "nvarchar"
+			},
+			{
+				"name": "industries",
+				"type": "nvarchar"
+			},
+			{
+				"name": "specialities",
+				"type": "nvarchar"
+			},
+			{
+				"name": "number_of_employees",
+				"type": "bigint",
+				"precision": 19
+			},
+			{
+				"name": "number_of_followers",
+				"type": "bigint",
+				"precision": 19
+			}
+		],
+		"typeProperties": {
+			"schema": "jpmia",
+			"table": "vw_Company_details"
+		}
+	}
+}
