@@ -6,19 +6,19 @@
 			"sources": [
 				{
 					"dataset": {
-						"referenceName": "ds_mia_company_detail",
+						"referenceName": "ds_company_detaiil",
 						"type": "DatasetReference"
 					},
-					"name": "source1"
+					"name": "companyDetail"
 				}
 			],
 			"sinks": [
 				{
 					"dataset": {
-						"referenceName": "ds_jpmia_reporting_comp_det",
+						"referenceName": "ds_d_company_report",
 						"type": "DatasetReference"
 					},
-					"name": "sink1"
+					"name": "companyReport"
 				}
 			],
 			"transformations": [],
@@ -43,17 +43,20 @@
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     isolationLevel: 'READ_UNCOMMITTED',",
-				"     format: 'table') ~> source1",
-				"source1 sink(allowSchemaDrift: true,",
+				"     format: 'table',",
+				"     staged: true) ~> companyDetail",
+				"companyDetail sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     deletable:false,",
 				"     insertable:true,",
 				"     updateable:false,",
 				"     upsertable:false,",
 				"     format: 'table',",
+				"     staged: true,",
+				"     allowCopyCommand: true,",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
-				"     errorHandlingOption: 'stopOnFirstError') ~> sink1"
+				"     errorHandlingOption: 'stopOnFirstError') ~> companyReport"
 			]
 		}
 	}
