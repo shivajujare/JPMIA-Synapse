@@ -10,7 +10,7 @@
 		"schema": [],
 		"typeProperties": {
 			"schema": "jpmia",
-			"table": "CompanyDetailReport"
+			"table": "CompanyDetail"
 		}
 	}
 }
