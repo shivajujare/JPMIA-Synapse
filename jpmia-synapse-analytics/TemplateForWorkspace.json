@@ -68,14 +68,11 @@
 								"datasetParameters": {
 									"companyDetail": {},
 									"companyReport": {}
-								}
+								},
+								"linkedServiceParameters": {}
 							},
 							"staging": {
-								"linkedService": {
-									"referenceName": "jpmia-synapse-analytics-WorkspaceDefaultStorage",
-									"type": "LinkedServiceReference"
-								},
-								"folderPath": "jpmia-synapse/synapse/workspaces/jpmia-synapse-analytics"
+								"folderPath": ""
 							},
 							"compute": {
 								"coreCount": 8,
@@ -92,7 +89,7 @@
 			},
 			"dependsOn": [
 				"[concat(variables('workspaceId'), '/dataflows/ingest company detail')]",
-				"[concat(variables('workspaceId'), '/linkedServices/jpmia-synapse-analytics-WorkspaceDefaultStorage')]"
+				"[concat(variables('workspaceId'), '/integrationRuntimes/AutoResolveIntegrationRuntime')]"
 			]
 		},
 		{
@@ -216,7 +213,7 @@
 				"schema": [],
 				"typeProperties": {
 					"schema": "jpmia",
-					"table": "CompanyDetailReport"
+					"table": "CompanyDetail"
 				}
 			},
 			"dependsOn": [
@@ -470,7 +467,7 @@
 					"sources": [
 						{
 							"dataset": {
-								"referenceName": "ds_company_detaiil",
+								"referenceName": "ds_mia_company_detail",
 								"type": "DatasetReference"
 							},
 							"name": "companyDetail"
@@ -479,7 +476,7 @@
 					"sinks": [
 						{
 							"dataset": {
-								"referenceName": "ds_d_company_report",
+								"referenceName": "ds_jpmia_reporting_comp_det",
 								"type": "DatasetReference"
 							},
 							"name": "companyReport"
@@ -507,8 +504,7 @@
 						"     allowSchemaDrift: true,",
 						"     validateSchema: false,",
 						"     isolationLevel: 'READ_UNCOMMITTED',",
-						"     format: 'table',",
-						"     staged: true) ~> companyDetail",
+						"     format: 'table') ~> companyDetail",
 						"companyDetail sink(allowSchemaDrift: true,",
 						"     validateSchema: false,",
 						"     deletable:false,",
@@ -516,8 +512,6 @@
 						"     updateable:false,",
 						"     upsertable:false,",
 						"     format: 'table',",
-						"     staged: true,",
-						"     allowCopyCommand: true,",
 						"     skipDuplicateMapInputs: true,",
 						"     skipDuplicateMapOutputs: true,",
 						"     errorHandlingOption: 'stopOnFirstError') ~> companyReport"
@@ -525,8 +519,8 @@
 				}
 			},
 			"dependsOn": [
-				"[concat(variables('workspaceId'), '/datasets/ds_company_detaiil')]",
-				"[concat(variables('workspaceId'), '/datasets/ds_d_company_report')]"
+				"[concat(variables('workspaceId'), '/datasets/ds_mia_company_detail')]",
+				"[concat(variables('workspaceId'), '/datasets/ds_jpmia_reporting_comp_det')]"
 			]
 		},
 		{
