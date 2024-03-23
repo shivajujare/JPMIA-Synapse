@@ -1,8 +1,8 @@
 {
-	"name": "SQL script 1",
+	"name": "Analysis",
 	"properties": {
 		"content": {
-			"query": "select * from jpmia.companydetail",
+			"query": "select * from jpmia.TopCompaniesWithMoreJobs;\n\n--State wise Job Report - generate a report at location level by aggregating the jobs at experience level\nselect locations,experience_level, count(job_id)\nfrom jpmia.JobDetail\nwhere locations != 'N/A'\ngroup by locations, experience_level\norder by locations,count(job_id) desc;\n\n--Jobs which have high applicants\nselect top 10 title, applies \nfrom jpmia.JobDetail\norder by applies DESC;\n\nselect * from jpmia.JobApplicationRate order by application_percentage desc;\n\n--Domains in order of more job postings\nselect posting_domain,count(job_id)\nfrom jpmia.JobDetail\nwhere posting_domain is not null\nGROUP by posting_domain\norder by count(job_id) desc",
 			"metadata": {
 				"language": "sql"
 			},
