@@ -2,13 +2,13 @@
 	"name": "0_schema",
 	"properties": {
 		"content": {
-			"query": "CREATE SCHEMA jpmia;\n\nselect top 100 * from jpmia.vw_job_detail;",
+			"query": "CREATE SCHEMA jpmia;\nCREATE SCHEMA jpmia_ext;\n\nselect top 100 * from jpmia.vw_job_detail;",
 			"metadata": {
 				"language": "sql"
 			},
 			"currentConnection": {
-				"databaseName": "market-insight-analytics",
-				"poolName": "Built-in"
+				"databaseName": "JobPulse_MarketInsightAnalytics",
+				"poolName": "JobPulse_MarketInsightAnalytics"
 			},
 			"resultLimit": 5000
 		},

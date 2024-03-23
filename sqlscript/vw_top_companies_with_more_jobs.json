@@ -2,13 +2,13 @@
 	"name": "vw_top_companies_with_more_jobs",
 	"properties": {
 		"content": {
-			"query": "create view jpmia.vw_top_companies_with_more_jobs as\nwith numb_jobs as \n(\nselect  distinct comp.company_id, comp.name as company_name, \n        experience_level,\n        count(job_id) over(partition by comp.name, jobs.experience_level ORDER by comp.name) number_of_jobs_exp_level ,\n        count(job_id) over(partition by comp.name order by comp.name) total_number_of_jobs\nfrom jpmia.DimCompanies comp \njoin jpmia.FactJobPostings jobs\n    on comp.company_id = jobs.company_id\n\n\n),\nrank_comp AS\n(\n    select *, DENSE_RANK() over(order by total_number_of_jobs desc) as ranks\n    from numb_jobs\n)\nselect * from rank_comp \nwhere ranks <= 10\n",
+			"query": "create view jpmia.vw_top_companies_with_more_jobs as\nwith numb_jobs as \n(\nselect  distinct comp.company_id, comp.name as company_name, \n        experience_level,\n        count(job_id) over(partition by comp.name, jobs.experience_level ORDER by comp.name) number_of_jobs_exp_level ,\n        count(job_id) over(partition by comp.name order by comp.name) total_number_of_jobs\nfrom jpmia_ext.DimCompanies comp \njoin jpmia_ext.FactJobPostings jobs\n    on comp.company_id = jobs.company_id\n\n\n),\nrank_comp AS\n(\n    select *, DENSE_RANK() over(order by total_number_of_jobs desc) as ranks\n    from numb_jobs\n)\nselect company_id, company_name, experience_level, number_of_jobs_exp_level, total_number_of_jobs from rank_comp \nwhere ranks <= 10\n",
 			"metadata": {
 				"language": "sql"
 			},
 			"currentConnection": {
-				"databaseName": "market-insight-analytics",
-				"poolName": "Built-in"
+				"databaseName": "JobPulse_MarketInsightAnalytics",
+				"poolName": "JobPulse_MarketInsightAnalytics"
 			},
 			"resultLimit": 5000
 		},

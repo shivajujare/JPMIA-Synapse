@@ -2,13 +2,13 @@
 	"name": "vw_Company_detail",
 	"properties": {
 		"content": {
-			"query": "create view jpmia.vw_Company_details\nAS\nselect \n    comp.company_id,\n    comp.name,\n    comp.description,\n    comp.company_size ,\n    comp.formatted_company_size,\n    comp.state ,\n    comp.country ,\n    comp.city ,\n    comp.zip_code ,\n    comp.address,\n    comp.url,\n    comp_ind.industries,\n    comp_spl.specialities,\n    femp.total_employees_as_of_now as number_of_employees,\n    femp.total_followers_as_of_now as number_of_followers\nfrom jpmia.DimCompanies comp\nleft join jpmia.DimCompanyIndustries comp_ind\n    on comp.company_id = comp_ind.company_id\nleft join jpmia.DimCompanySpecialities comp_spl\n    on comp.company_id = comp_spl.company_id\nleft join jpmia.FactCompanyEmployeeGrowth femp\n    on comp.company_id = femp.company_id\n;",
+			"query": "create view jpmia.vw_Company_details\nAS\nselect \n    comp.company_id,\n    comp.name,\n    comp.description,\n    comp.company_size ,\n    comp.formatted_company_size,\n    comp.state ,\n    comp.country ,\n    comp.city ,\n    comp.zip_code ,\n    comp.address,\n    comp.url,\n    comp_ind.industries,\n    comp_spl.specialities,\n    femp.total_employees_as_of_now as number_of_employees,\n    femp.total_followers_as_of_now as number_of_followers\nfrom jpmia_ext.DimCompanies comp\nleft join jpmia_ext.DimCompanyIndustries comp_ind\n    on comp.company_id = comp_ind.company_id\nleft join jpmia_ext.DimCompanySpecialities comp_spl\n    on comp.company_id = comp_spl.company_id\nleft join jpmia_ext.FactCompanyEmployeeGrowth femp\n    on comp.company_id = femp.company_id\n;",
 			"metadata": {
 				"language": "sql"
 			},
 			"currentConnection": {
-				"databaseName": "market-insight-analytics",
-				"poolName": "Built-in"
+				"databaseName": "JobPulse_MarketInsightAnalytics",
+				"poolName": "JobPulse_MarketInsightAnalytics"
 			},
 			"resultLimit": 5000
 		},
