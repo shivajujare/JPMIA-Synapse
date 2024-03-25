@@ -1,10 +1,6 @@
 {
 	"name": "ds_mia_company_detail",
 	"properties": {
-		"linkedServiceName": {
-			"referenceName": "ls_sql_mia",
-			"type": "LinkedServiceReference"
-		},
 		"annotations": [],
 		"type": "AzureSqlTable",
 		"schema": [

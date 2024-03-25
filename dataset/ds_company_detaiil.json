@@ -1,10 +1,6 @@
 {
 	"name": "ds_company_detaiil",
 	"properties": {
-		"linkedServiceName": {
-			"referenceName": "ls_market_insight_analytics",
-			"type": "LinkedServiceReference"
-		},
 		"annotations": [],
 		"type": "AzureSqlDWTable",
 		"schema": [

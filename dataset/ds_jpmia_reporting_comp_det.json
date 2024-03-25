@@ -1,10 +1,6 @@
 {
 	"name": "ds_jpmia_reporting_comp_det",
 	"properties": {
-		"linkedServiceName": {
-			"referenceName": "ls_sql_jpmia_reporting",
-			"type": "LinkedServiceReference"
-		},
 		"annotations": [],
 		"type": "AzureSqlTable",
 		"schema": [],
