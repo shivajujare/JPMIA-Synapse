@@ -14,5 +14,10 @@ Below are the main SQL scripts and thier usage
 5. vw_company_detial, vw_job_application_rate, vw_job_detail and vw_top_companies_with_more_jobs - views created by joining multiple tables to create respective reporting tables
 6. Analysis - To perform analysis on reporting tables
 
-
+Questions to answer:
+1. State wise Job Report - generate a report at location level by aggregating the jobs at experience level
+2. Jobs which have high applicants
+3. Domains in order of more job postings
+4. Companies reports with theri employees and followers count
+5. Find the application rate of each work type at different application type and posting domain level
 
