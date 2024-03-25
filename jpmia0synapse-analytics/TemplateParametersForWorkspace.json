@@ -1,0 +1,21 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"workspaceName": {
+			"value": "jpmia0synapse-analytics"
+		},
+		"jpmia-synapse-analytics-WorkspaceDefaultSqlServer_connectionString": {
+			"value": "Integrated Security=False;Encrypt=True;Connection Timeout=30;Data Source=tcp:jpmia-synapse-analytics.sql.azuresynapse.net,1433;Initial Catalog=@{linkedService().DBName}"
+		},
+		"jpmia0synapse-analytics-WorkspaceDefaultSqlServer_connectionString": {
+			"value": "Integrated Security=False;Encrypt=True;Connection Timeout=30;Data Source=tcp:jpmia0synapse-analytics.sql.azuresynapse.net,1433;Initial Catalog=@{linkedService().DBName}"
+		},
+		"jpmia-synapse-analytics-WorkspaceDefaultStorage_properties_typeProperties_url": {
+			"value": "https://adlsjpmia.dfs.core.windows.net"
+		},
+		"jpmia0synapse-analytics-WorkspaceDefaultStorage_properties_typeProperties_url": {
+			"value": "https://adlsjpmia.dfs.core.windows.net"
+		}
+	}
+}

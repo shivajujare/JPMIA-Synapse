@@ -1,0 +1,349 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"workspaceName": {
+			"type": "string",
+			"metadata": "Workspace name",
+			"defaultValue": "jpmia0synapse-analytics"
+		},
+		"jpmia-synapse-analytics-WorkspaceDefaultSqlServer_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'jpmia-synapse-analytics-WorkspaceDefaultSqlServer'",
+			"defaultValue": "Integrated Security=False;Encrypt=True;Connection Timeout=30;Data Source=tcp:jpmia-synapse-analytics.sql.azuresynapse.net,1433;Initial Catalog=@{linkedService().DBName}"
+		},
+		"jpmia0synapse-analytics-WorkspaceDefaultSqlServer_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'jpmia0synapse-analytics-WorkspaceDefaultSqlServer'",
+			"defaultValue": "Integrated Security=False;Encrypt=True;Connection Timeout=30;Data Source=tcp:jpmia0synapse-analytics.sql.azuresynapse.net,1433;Initial Catalog=@{linkedService().DBName}"
+		},
+		"jpmia-synapse-analytics-WorkspaceDefaultStorage_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://adlsjpmia.dfs.core.windows.net"
+		},
+		"jpmia0synapse-analytics-WorkspaceDefaultStorage_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://adlsjpmia.dfs.core.windows.net"
+		}
+	},
+	"variables": {
+		"workspaceId": "[concat('Microsoft.Synapse/workspaces/', parameters('workspaceName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('workspaceName'), '/jpmia-synapse-analytics-WorkspaceDefaultSqlServer')]",
+			"type": "Microsoft.Synapse/workspaces/linkedServices",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"parameters": {
+					"DBName": {
+						"type": "String"
+					}
+				},
+				"annotations": [],
+				"type": "AzureSqlDW",
+				"typeProperties": {
+					"connectionString": "[parameters('jpmia-synapse-analytics-WorkspaceDefaultSqlServer_connectionString')]"
+				},
+				"connectVia": {
+					"referenceName": "AutoResolveIntegrationRuntime",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/integrationRuntimes/AutoResolveIntegrationRuntime')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/jpmia-synapse-analytics-WorkspaceDefaultStorage')]",
+			"type": "Microsoft.Synapse/workspaces/linkedServices",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobFS",
+				"typeProperties": {
+					"url": "[parameters('jpmia-synapse-analytics-WorkspaceDefaultStorage_properties_typeProperties_url')]"
+				},
+				"connectVia": {
+					"referenceName": "AutoResolveIntegrationRuntime",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/integrationRuntimes/AutoResolveIntegrationRuntime')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/jpmia0synapse-analytics-WorkspaceDefaultSqlServer')]",
+			"type": "Microsoft.Synapse/workspaces/linkedServices",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"parameters": {
+					"DBName": {
+						"type": "String"
+					}
+				},
+				"annotations": [],
+				"type": "AzureSqlDW",
+				"typeProperties": {
+					"connectionString": "[parameters('jpmia0synapse-analytics-WorkspaceDefaultSqlServer_connectionString')]"
+				},
+				"connectVia": {
+					"referenceName": "AutoResolveIntegrationRuntime",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/integrationRuntimes/AutoResolveIntegrationRuntime')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/jpmia0synapse-analytics-WorkspaceDefaultStorage')]",
+			"type": "Microsoft.Synapse/workspaces/linkedServices",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobFS",
+				"typeProperties": {
+					"url": "[parameters('jpmia0synapse-analytics-WorkspaceDefaultStorage_properties_typeProperties_url')]"
+				},
+				"connectVia": {
+					"referenceName": "AutoResolveIntegrationRuntime",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/integrationRuntimes/AutoResolveIntegrationRuntime')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/AutoResolveIntegrationRuntime')]",
+			"type": "Microsoft.Synapse/workspaces/integrationRuntimes",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"type": "Managed",
+				"typeProperties": {
+					"computeProperties": {
+						"location": "AutoResolve",
+						"dataFlowProperties": {
+							"computeType": "General",
+							"coreCount": 8,
+							"timeToLive": 0
+						}
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/WorkspaceSystemIdentity')]",
+			"type": "Microsoft.Synapse/workspaces/credentials",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"type": "ManagedIdentity",
+				"typeProperties": {}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/0_schema')]",
+			"type": "Microsoft.Synapse/workspaces/sqlscripts",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"content": {
+					"query": "CREATE SCHEMA jpmia;\nCREATE SCHEMA jpmia_ext;\n\nselect top 100 * from jpmia.vw_job_detail;",
+					"metadata": {
+						"language": "sql"
+					},
+					"currentConnection": {
+						"databaseName": "JobPulse_MarketInsightAnalytics",
+						"poolName": "JobPulse_MarketInsightAnalytics"
+					},
+					"resultLimit": 5000
+				},
+				"type": "SqlQuery"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/1_ext_tables_uv')]",
+			"type": "Microsoft.Synapse/workspaces/sqlscripts",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"content": {
+					"query": "create MASTER KEY ENCRYPTION BY PASSWORD = 'jpmia#2188';\n\ndrop CREDENTIAL uv_sas_token;\nalter DATABASE SCOPED CREDENTIAL uv_sas_token WITH IDENTITY = 'SHARED ACCESS SIGNATURE',\nSECRET = 'sv=2022-11-02&ss=b&srt=sco&sp=rwdlacyx&se=2024-04-05T13:03:44Z&st=2024-03-24T05:03:44Z&spr=https&sig=ck1ArJAeEa9eY6ApvcczH3G%2BhcvECzhJmHKe94m%2Fw6E%3D';\n\ndrop EXTERNAL DATA SOURCE ext_usage_view\ncreate EXTERNAL DATA SOURCE ext_usage_view\nwith (\n    LOCATION='https://adlsjpmia.blob.core.windows.net/jpmiadata/usage_view/',\n    CREDENTIAL = uv_sas_token\n);\n\ndrop EXTERNAL DATA SOURCE ext_biz_view_\ncreate EXTERNAL DATA SOURCE ext_biz_view\nwith (\n    LOCATION='https://adlsjpmia.blob.core.windows.net/jpmiadata/biz_view/',\n    CREDENTIAL = uv_sas_token\n);\n\n--DROP EXTERNAL TABLE jpmia.DimCompanies;\nCREATE EXTERNAL FILE FORMAT uv_delta_format\nWITH (\n    FORMAT_TYPE = PARQUET,\n    DATA_COMPRESSION = 'org.apache.hadoop.io.compress.SnappyCodec' -- Optional: specify compression codec\n);\n\nDROP TABLE jpmia_ext.DimCompanies;\ndrop table \nCREATE EXTERNAL table jpmia_ext.DimCompanies\n(\n    company_id bigint,\n            name NVARCHAR(200),\n           description NVARCHAR(MAX),\n           company_size int,\n           formatted_company_size NVARCHAR(50),\n           state NVARCHAR(100),\n           country NVARCHAR(100),\n           city NVARCHAR(1000),\n           zip_code NVARCHAR(100),\n           address NVARCHAR(3000),\n           url NVARCHAR(1000),\n           ingest_date date\n)\nWITH(\n    LOCATION = 'DimCompanies',\n    DATA_SOURCE = ext_usage_view,\n    FILE_FORMAT = uv_delta_format\n)\ngo;\n\nselect TOP 100 ingest_date from jpmia_ext.DimCompanies;\n\n------------\ndrop TABLE if EXISTS jpmia_ext.DimCompanyIndustries\nCREATE EXTERNAL table jpmia_ext.DimCompanyIndustries\n(\n    company_id bigint,\n  industries NVARCHAR(1000),\n  ingest_date date\n)\nWITH(\n    LOCATION = 'DimCompanyIndustries',\n    DATA_SOURCE = ext_usage_view,\n    FILE_FORMAT = uv_delta_format\n)\ngo;\n\nselect top 10 * from jpmia_ext.DimCompanyIndustries;\n\n----------------\n\nCREATE EXTERNAL table jpmia_ext.DimCompanySpecialities(\n  company_id bigint,\n  specialities NVARCHAR(3000),\n  ingest_date date\n)\nWITH(\n    LOCATION = 'DimCompanySpecialities',\n    DATA_SOURCE = ext_usage_view,\n    FILE_FORMAT = uv_delta_format\n)\ngo;\n\nSELECT top 10 * from jpmia_ext.DimCompanySpecialities;\n\n-----------------\n\nCREATE EXTERNAL table jpmia_ext.DimJobBenefits(\n  job_id bigint,\n  inferred VARCHAR(10),\n  type VARCHAR(2000),\n  ingest_date date\n  )\nWITH(\n    LOCATION = 'DimJobBenefits',\n    DATA_SOURCE = ext_usage_view,\n    FILE_FORMAT = uv_delta_format\n)\ngo;\n\nselect * from jpmia_ext.DimJobBenefits;\n\n------------------\n\n\n\nCREATE EXTERNAL table jpmia_ext.DimJobSkills(\n  job_id\tbigint,\n  skill_abr NVARCHAR(1000),\n  skill_name NVARCHAR(2000),\n  ingest_date date\n  )\nWITH(\n    LOCATION = 'DimJobSkills',\n    DATA_SOURCE = ext_usage_view,\n    FILE_FORMAT = uv_delta_format\n)\ngo;\n\nselect top 10 * from jpmia_ext.DimJobSkills;\n\n-------------\n\nCREATE EXTERNAL table jpmia_ext.FactCompanyEmployeeGrowth\n(\n  company_id bigint,\n  employee_count bigint,\n  follower_count bigint,\n  time_recorded NVARCHAR(1000),\n  date_time_recorded DATETIME2,\n  date_recorded date,\n  total_employees_as_of_now bigint,\n  total_followers_as_of_now bigint,\n  ingest_date date\n  )\nWITH(\n    LOCATION = 'FactCompanyEmployeeGrowth',\n    DATA_SOURCE = ext_usage_view,\n    FILE_FORMAT = uv_delta_format\n)\ngo;\n\nSELECT * from jpmia_ext.FactCompanyEmployeeGrowth;\n\n-------------\ndrop EXTERNAL TABLE jpmia_ext.DimJobIndustries;\nCREATE EXTERNAL table jpmia_ext.DimJobIndustries(\n  job_id\tbigint,\n  industry_id bigint,\n  industry_name NVARCHAR(1000),\n  ingest_date date\n  )\nWITH(\n    LOCATION = 'DimJobIndustries',\n    DATA_SOURCE = ext_usage_view,\n    FILE_FORMAT = uv_delta_format\n)\ngo;\n\nSELECT * from jpmia_ext.DimJobIndustries;\n\n--------\n\nCREATE EXTERNAL table jpmia_ext.DimJobSalaries\n(\n    salary_id bigint,\n  job_id bigint,\n  max_salary float,\n  med_salary float,\n  min_salary float,\n  pay_period NVARCHAR(100),\n  currency NVARCHAR(10),\n  compensation_type NVARCHAR(100),\n  ingest_date date\n)\nWITH(\n    LOCATION = 'job_salaries',\n    DATA_SOURCE = ext_biz_view,\n    FILE_FORMAT=uv_delta_format\n);\n\nselect top 10 * from jpmia_ext.DimJobSalaries;\n\n-------\n\nCREATE EXTERNAL table jpmia_ext.FactJobPostings\n(\n    job_id bigint, \n   title NVARCHAR(3000),\n  company_id bigint,\t\n  locations NVARCHAR(500),\t\n  applies int,\t\n  original_listed_time NVARCHAR(100),\t\n  remote_allowed NVARCHAR(10),\t\n  views int,\t\n  job_posting_url\tNVARCHAR(1000), \n  application_url NVARCHAR(1000),\t\n  application_type NVARCHAR(1000),\t\n  expiry NVARCHAR(100),\t\n  closed_time NVARCHAR(100),\t\n  experience_level NVARCHAR(100),\t\n  listed_time NVARCHAR(100),\t\n  posting_domain NVARCHAR(100),\t\n  sponsored NVARCHAR(100),\t\n  work_type NVARCHAR(100),\t\n  scraped NVARCHAR(100),\n  ingest_date date\n)\nWITH(\n    LOCATION = 'job_postings',\n    DATA_SOURCE = ext_biz_view,\n    FILE_FORMAT=uv_delta_format\n);\n\nselect top 10 * from jpmia_ext.FactJobPostings;\n\nSELECT * from sys.tables;",
+					"metadata": {
+						"language": "sql"
+					},
+					"currentConnection": {
+						"databaseName": "JobPulse_MarketInsightAnalytics",
+						"poolName": "JobPulse_MarketInsightAnalytics"
+					},
+					"resultLimit": 5000
+				},
+				"type": "SqlQuery"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/2_jpmia_reporting_DDL')]",
+			"type": "Microsoft.Synapse/workspaces/sqlscripts",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"content": {
+					"query": "drop TABLE jpmia.CompanyDetail\nCREATE TABLE jpmia.CompanyDetail\n(\n    company_id BIGINT,\n    name NVARCHAR(2000),\n    description NVARCHAR(4000),\n    company_size int,\n    formatted_company_size NVARCHAR(100),\n    state NVARCHAR(1000),\n    country NVARCHAR(1000),\n    city NVARCHAR(1000),\n    zip_code NVARCHAR(1000),\n    address NVARCHAR(3000),\n    url NVARCHAR(1000),\n    industries NVARCHAR(3000),\n    specialities NVARCHAR(3000),\n    number_of_employees BIGINT,\n    number_of_followers BIGINT\n)\nWITH\n(\n    DISTRIBUTION = HASH (company_id),\n    CLUSTERED COLUMNSTORE INDEX\n)\nGO\n------------------------------\nCREATE TABLE jpmia.JobApplicationRate\n(\n    work_type NVARCHAR(100),\n    application_type NVARCHAR(200),\n    posting_domain NVARCHAR(1000),\n    no_of_applications BIGINT,\n    no_of_views BIGINT,\n    application_percentage DECIMAL(18,2)\n)\nWITH\n(\n    DISTRIBUTION = HASH (work_type),\n    CLUSTERED COLUMNSTORE INDEX\n)\nGO\n-----------------------------\ncreate TABLE jpmia.JobDetail\n(\n    job_id BIGINT,\n    title NVARCHAR(3000),\nbenefits NVARCHAR(1000),\ninferred NVARCHAR(100),\nrequired_skills NVARCHAR(1000),\nindustries NVARCHAR(1000),\nMax_salary_per_annum FLOAT,\nMin_salary_per_annum FLOAT,\nMed_salary_per_annum FLOAT,\ncurrency NVARCHAR(100),\ncompensation_type NVARCHAR(200),\nlocations NVARCHAR(500),\napplies INT,\t\noriginal_listed_time NVARCHAR(100),\t\nremote_allowed BIGINT,\t\nviews BIGINT,\t\njob_posting_url NVARCHAR(1000), \napplication_url NVARCHAR(1000),\t\napplication_type NVARCHAR(200),\t\nexpiry NVARCHAR(100),\t\nclosed_time NVARCHAR(100),\t\nexperience_level NVARCHAR(200),\t\nlisted_time NVARCHAR(200),\t\nposting_domain NVARCHAR(500),\t\nsponsored NVARCHAR(200),\t\nwork_type NVARCHAR(200),\t\nscraped NVARCHAR(100)\n)\nWITH\n(\n    DISTRIBUTION = HASH (job_id),\n    CLUSTERED COLUMNSTORE INDEX\n)\n--------\nCREATE TABLE jpmia.TopcompaniesWithMoreJobs\n(\n    company_id BIGINT,\n    company_name NVARCHAR(1000),\n    experience_level NVARCHAR(500), \n    number_of_jobs_exp_level BIGINT, \n    total_number_of_jobs BIGINT\n)\nWITH\n(\n    DISTRIBUTION = HASH (company_id),\n    CLUSTERED COLUMNSTORE INDEX\n)\n;\n\nselect * from sys.tables;",
+					"metadata": {
+						"language": "sql"
+					},
+					"currentConnection": {
+						"databaseName": "JobPulse_MarketInsightAnalytics",
+						"poolName": "JobPulse_MarketInsightAnalytics"
+					},
+					"resultLimit": 5000
+				},
+				"type": "SqlQuery"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/3_Load_Ded_pool_tables')]",
+			"type": "Microsoft.Synapse/workspaces/sqlscripts",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"content": {
+					"query": "create PROCEDURE jpmia.sp_LoadReportingTables\nAS\nBEGIN\n    --truncate tables\n    TRUNCATE TABLE jpmia.CompanyDetail\n    TRUNCATE TABLE jpmia.JobApplicationRate\n    TRUNCATE TABLE jpmia.JobDetail\n    TRUNCATE TABLE jpmia.TopCompaniesWithMoreJobs\n    -------------------------------------- \n    \n    INSERT INTO jpmia.CompanyDetail\n    SELECT *\n    FROM jpmia.vw_Company_details;\n    --\n    INSERT INTO jpmia.JobApplicationRate\n    SELECT *\n    FROM jpmia.vw_job_application_rate;\n    --\n    INSERT INTO jpmia.JobDetail\n    SELECT *\n    From jpmia.vw_job_detail;\n    --\n    INSERT INTO jpmia.TopCompaniesWithMoreJobs\n    select *\n    FROM jpmia.vw_top_companies_with_more_jobs;\nend;",
+					"metadata": {
+						"language": "sql"
+					},
+					"currentConnection": {
+						"databaseName": "JobPulse_MarketInsightAnalytics",
+						"poolName": "JobPulse_MarketInsightAnalytics"
+					},
+					"resultLimit": 5000
+				},
+				"type": "SqlQuery"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/Analysis')]",
+			"type": "Microsoft.Synapse/workspaces/sqlscripts",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"content": {
+					"query": "EXEC jpmia.sp_LoadReportingTables\n\nselect * from jpmia.TopCompaniesWithMoreJobs;\n\n--State wise Job Report - generate a report at location level by aggregating the jobs at experience level\nselect locations,experience_level, count(job_id)\nfrom jpmia.JobDetail\nwhere locations != 'N/A'\ngroup by locations, experience_level\norder by locations,count(job_id) desc;\n\n--Jobs which have high applicants\nselect top 10 title, applies \nfrom jpmia.JobDetail\norder by applies DESC;\n\nselect * from jpmia.JobApplicationRate order by application_percentage desc;\n\n--Domains in order of more job postings\nselect posting_domain,count(job_id)\nfrom jpmia.JobDetail\n--where posting_domain is not null\nGROUP by posting_domain\norder by count(job_id) desc\n\nselect * from jpmia.jobdetail where posting_domain is null;\n--Design,Art/Creative,Information Technology\nselect *\nfrom jpmia_ext.DimJobBenefits benef\nwhere benef.job_id = '3958427';\nleft join agg_skills skills\n    on benef.job_id = skills.job_id\nleft join agg_industries indus\n    on indus.job_id = benef.job_id\nleft join salaries sal \n    on sal.job_id = benef.job_id\nleft join jpmia_ext.FactJobPostings factjob\n    on benef.job_id = factjob.job_id\n    ",
+					"metadata": {
+						"language": "sql"
+					},
+					"currentConnection": {
+						"databaseName": "JobPulse_MarketInsightAnalytics",
+						"poolName": "JobPulse_MarketInsightAnalytics"
+					},
+					"resultLimit": 5000
+				},
+				"type": "SqlQuery"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/export_serverless_data')]",
+			"type": "Microsoft.Synapse/workspaces/sqlscripts",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"content": {
+					"query": "-- Step 1: Create an external data source pointing to Azure Data Lake Storage Gen2\ncreate DATABASE SCOPED CREDENTIAL synapse_sas_exp WITH IDENTITY = 'SHARED ACCESS SIGNATURE',\nSECRET = 'sv=2022-11-02&ss=b&srt=sco&sp=rwdlacyx&se=2024-04-05T03:07:27Z&st=2024-03-21T19:07:27Z&spr=https&sig=%2Bx9j0JqIwONzh0tUqpNhLLy0enka7RB%2F3SA%2BtRTCnjc%3D';\n\nCREATE EXTERNAL DATA SOURCE synapse_exported_data\nWITH (\n    LOCATION = 'https://adlsjpmia.blob.core.windows.net/jpmia-synapse/synapse/workspaces/jpmia-synapse-analytics/exported_data_serverless',\n    CREDENTIAL = synapse_sas_exp\n);\n\n-- Step 2: Export data from the Serverless SQL pool to Azure Data Lake Storage Gen2\nCREATE EXTERNAL TABLE jpmia.exportedCompanyDetail\nWITH (\n    LOCATION = 'exportedCompanyDetail',\n    DATA_SOURCE = synapse_exported_data,\n    FILE_FORMAT = uv_delta_format\n) AS\nSELECT *\nFROM jpmia.vw_Company_details;\n\nCREATE EXTERNAL TABLE jpmia.exportedJobApplicationRate\nWITH (\n    LOCATION = 'exportedJobApplicationRate',\n    DATA_SOURCE = synapse_exported_data,\n    FILE_FORMAT = uv_delta_format\n) AS\nSELECT *\nFROM jpmia.vw_job_application_rate;\n\nCREATE EXTERNAL TABLE jpmia.exportedJobDetail\nWITH (\n    LOCATION = 'exportedJobDetail',\n    DATA_SOURCE = synapse_exported_data,\n    FILE_FORMAT = uv_delta_format\n) AS\nSELECT *\nFROM jpmia.vw_Job_Detail;\n\nCREATE EXTERNAL TABLE jpmia.exportedTopCompaniesWithMoreJobs\nWITH (\n    LOCATION = 'exportedTopCompaniesWithMoreJobs',\n    DATA_SOURCE = synapse_exported_data,\n    FILE_FORMAT = uv_delta_format\n) AS\nSELECT *\nFROM jpmia.vw_top_companies_with_more_jobs;\n",
+					"metadata": {
+						"language": "sql"
+					},
+					"currentConnection": {
+						"databaseName": "market-insight-analytics",
+						"poolName": "Built-in"
+					},
+					"resultLimit": 5000
+				},
+				"type": "SqlQuery"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/vw_Company_detail')]",
+			"type": "Microsoft.Synapse/workspaces/sqlscripts",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"content": {
+					"query": "create view jpmia.vw_Company_details\nAS\nselect \n    comp.company_id,\n    comp.name,\n    comp.description,\n    comp.company_size ,\n    comp.formatted_company_size,\n    comp.state ,\n    comp.country ,\n    comp.city ,\n    comp.zip_code ,\n    comp.address,\n    comp.url,\n    comp_ind.industries,\n    comp_spl.specialities,\n    femp.total_employees_as_of_now as number_of_employees,\n    femp.total_followers_as_of_now as number_of_followers\nfrom jpmia_ext.DimCompanies comp\nleft join jpmia_ext.DimCompanyIndustries comp_ind\n    on comp.company_id = comp_ind.company_id\nleft join jpmia_ext.DimCompanySpecialities comp_spl\n    on comp.company_id = comp_spl.company_id\nleft join jpmia_ext.FactCompanyEmployeeGrowth femp\n    on comp.company_id = femp.company_id\n;",
+					"metadata": {
+						"language": "sql"
+					},
+					"currentConnection": {
+						"databaseName": "JobPulse_MarketInsightAnalytics",
+						"poolName": "JobPulse_MarketInsightAnalytics"
+					},
+					"resultLimit": 5000
+				},
+				"type": "SqlQuery"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/vw_job_application_rate')]",
+			"type": "Microsoft.Synapse/workspaces/sqlscripts",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"content": {
+					"query": "create view jpmia.vw_job_application_rate\nas\nwith cte as (\nselect  work_type,\n        application_type,\n        ISNULL(posting_domain,'N/A') posting_domain,\n        sum(applies) no_of_applications,\n        sum(views) no_of_views\nfrom jpmia_ext.FactJobPostings\ngroup by work_type,\n       application_type,\n       posting_domain\n)\n\nSELECT work_type,\n       application_type,\n       posting_domain,\n       no_of_applications,\n       no_of_views,\n       case when no_of_views>0 and no_of_applications > 0 then CAST((no_of_applications * 100.0 / no_of_views) as DECIMAL(18,2))\n            else 0.00\n        end AS application_percentage\nFROM cte\n--group by work_type,application_type,posting_domain\n",
+					"metadata": {
+						"language": "sql"
+					},
+					"currentConnection": {
+						"databaseName": "JobPulse_MarketInsightAnalytics",
+						"poolName": "JobPulse_MarketInsightAnalytics"
+					},
+					"resultLimit": 5000
+				},
+				"type": "SqlQuery"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/vw_job_detail')]",
+			"type": "Microsoft.Synapse/workspaces/sqlscripts",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"content": {
+					"query": "\ncreate view jpmia.vw_Job_Detail \nas\nwith agg_skills as(\n    select job_id,\n            STRING_AGG(skill_name, ',') as skills\n    from jpmia_ext.DimJobSkills skills\n    GROUP by job_id\n),\nagg_industries as (\n    select job_id, STRING_AGG(industry_name, ',') as industries\n    from jpmia_ext.DimJobIndustries\n    group by job_id\n),\nsalaries as (\n    select  job_id,\n            case when pay_period = 'HOURLY' then (max_salary*8)*365 \n                 when pay_period = 'YEARLY' then max_salary\n                 when pay_period = 'MONTHLY' then (max_salary*12)\n                 when pay_period = 'WEEKLY' then (max_salary*52)\n                 when pay_period = 'ONCE' then max_salary\n            end as Max_salary_per_annum,\n            case when pay_period = 'HOURLY' then (min_salary*8)*365 \n                 when pay_period = 'YEARLY' then min_salary\n                 when pay_period = 'MONTHLY' then (min_salary*12)\n                 when pay_period = 'WEEKLY' then (min_salary*52)\n                 when pay_period = 'ONCE' then min_salary\n            end as Min_salary_per_annum,\n            case when pay_period = 'HOURLY' then (med_salary*8)*365 \n                 when pay_period = 'YEARLY' then med_salary\n                 when pay_period = 'MONTHLY' then (med_salary*12)\n                 when pay_period = 'WEEKLY' then (med_salary*52)\n                 when pay_period = 'ONCE' then med_salary\n            end as Med_salary_per_annum,\n            currency,\n            compensation_type\n    from jpmia_ext.DimJobSalaries\n)\nselect\nbenef.job_id,\nfactjob.title,\nbenef.type as benefits,\nbenef.inferred,\nskills.skills as required_skills,\nindus.industries as industries,\nsal.Max_salary_per_annum,\nsal.Min_salary_per_annum,\nsal.Med_salary_per_annum,\nsal.currency,\nsal.compensation_type,\nfactjob.locations,\n  factjob.applies,\t\n  factjob.original_listed_time,\t\n  factjob.remote_allowed,\t\n  factjob.views,\t\n  factjob.job_posting_url, \n  factjob.application_url,\t\n  factjob.application_type,\t\n  factjob.expiry ,\t\n  factjob.closed_time,\t\n  factjob.experience_level,\t\n  factjob.listed_time,\t\n  factjob.posting_domain,\t\n  factjob.sponsored,\t\n  factjob.work_type,\t\n  factjob.scraped\nfrom jpmia_ext.DimJobBenefits benef\nleft join agg_skills skills\n    on benef.job_id = skills.job_id\nleft join agg_industries indus\n    on indus.job_id = benef.job_id\nleft join salaries sal \n    on sal.job_id = benef.job_id\nleft join jpmia_ext.FactJobPostings factjob\n    on benef.job_id = factjob.job_id\n;\n\n",
+					"metadata": {
+						"language": "sql"
+					},
+					"currentConnection": {
+						"databaseName": "JobPulse_MarketInsightAnalytics",
+						"poolName": "JobPulse_MarketInsightAnalytics"
+					},
+					"resultLimit": 5000
+				},
+				"type": "SqlQuery"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/vw_top_companies_with_more_jobs')]",
+			"type": "Microsoft.Synapse/workspaces/sqlscripts",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"content": {
+					"query": "create view jpmia.vw_top_companies_with_more_jobs as\nwith numb_jobs as \n(\nselect  distinct comp.company_id, comp.name as company_name, \n        experience_level,\n        count(job_id) over(partition by comp.name, jobs.experience_level ORDER by comp.name) number_of_jobs_exp_level ,\n        count(job_id) over(partition by comp.name order by comp.name) total_number_of_jobs\nfrom jpmia_ext.DimCompanies comp \njoin jpmia_ext.FactJobPostings jobs\n    on comp.company_id = jobs.company_id\n\n\n),\nrank_comp AS\n(\n    select *, DENSE_RANK() over(order by total_number_of_jobs desc) as ranks\n    from numb_jobs\n)\nselect company_id, company_name, experience_level, number_of_jobs_exp_level, total_number_of_jobs from rank_comp \nwhere ranks <= 10\n",
+					"metadata": {
+						"language": "sql"
+					},
+					"currentConnection": {
+						"databaseName": "JobPulse_MarketInsightAnalytics",
+						"poolName": "JobPulse_MarketInsightAnalytics"
+					},
+					"resultLimit": 5000
+				},
+				"type": "SqlQuery"
+			},
+			"dependsOn": []
+		}
+	]
+}
